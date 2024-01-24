@@ -12,6 +12,7 @@ class FlagpostServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
+        // Define a macro so we can retrieve a default scope when needed
         Feature::macro('getDefaultScopeValue', function () {
             return $this->defaultScope();
         });

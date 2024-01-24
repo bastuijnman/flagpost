@@ -24,17 +24,27 @@ class GoalManager
     {
     }
 
-    public function for($scope)
+    /**
+     * Sets the scope for the goal. 
+     */
+    public function for($scope): GoalManager
     {
         $this->scope = $scope;
         return $this;
     }
 
-    public function store($store) {
+    /**
+     * Sets the store for the goal
+     */
+    public function store($store): GoalManager 
+    {
         $this->scope = $store;
         return $this;
     }
 
+    /**
+     * Indicates goal has been reached for a feature.
+     */
     public function reached($feature)
     {    
         $driver = Feature::getDefaultDriver();
