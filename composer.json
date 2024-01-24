@@ -1,0 +1,17 @@
+{
+    "name": "bastuijnman/flagpost",
+    "description": "Provides basic A/B test results for Laravel Pennant",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bastuijnman\\Flagpost\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bas Tuijnman"
+        }
+    ],
+    "require": {}
+}
