@@ -13,5 +13,15 @@
             "name": "Bas Tuijnman"
         }
     ],
-    "require": {}
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bastuijnman\\Flagpost\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "illuminate/support": "^10.42",
+        "illuminate/database": "^10.38"
+    }
 }
