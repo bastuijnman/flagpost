@@ -1,8 +1,11 @@
 providers:
   # - Workbench\App\Providers\WorkbenchServiceProvider
+  - Laravel\Pennant\PennantServiceProvider
 
 migrations:
+  - database/migrations
   - workbench/database/migrations
+  - vendor/laravel/pennant/database/migrations
 
 seeders:
   - Workbench\Database\Seeders\DatabaseSeeder

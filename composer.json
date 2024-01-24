@@ -23,13 +23,15 @@
     "require": {
         "illuminate/database": "^10.0",
         "illuminate/support": "^10.0",
-        "laravel/pennant": "^1.6"
+        "laravel/pennant": "^1.6",
+        "illuminate/contracts": "*"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0"
     },
     "autoload-dev": {
         "psr-4": {
+            "Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
