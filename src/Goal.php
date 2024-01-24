@@ -14,7 +14,7 @@ class Goal extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        // TODO
+        return GoalManager::class;
     }
 
 }
