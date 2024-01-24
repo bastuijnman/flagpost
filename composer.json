@@ -22,7 +22,8 @@
     },
     "require": {
         "illuminate/database": "^10.0",
-        "illuminate/support": "^10.0"
+        "illuminate/support": "^10.0",
+        "laravel/pennant": "^1.6"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0"
