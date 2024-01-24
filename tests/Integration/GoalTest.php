@@ -52,4 +52,32 @@ class GoalTest extends TestCase
         ]);
     }
 
+    public function test_it_should_be_albe_to_reach_goal_with_custom_scope()
+    {
+        Feature::define('my-test-feature', function () {
+            return 'value';
+        });
+
+        Feature::for('custom-scope-1')->value('my-test-feature');
+        Feature::for('custom-scope-2')->value('my-test-feature');
+
+        $this->assertDatabaseCount('features', 2);
+
+        Goal::for('custom-scope-2')->reached('my-test-feature');
+
+        // Scope 2 should have been reached
+        $this->assertDatabaseHas('features', [
+            'name' => 'my-test-feature',
+            'scope' => Feature::serializeScope('custom-scope-2'),
+            'goal_reached' => true
+        ]);
+
+        // Scope 1 should not have been set to be reached
+        $this->assertDatabaseMissing('features', [
+            'name' => 'my-test-feature',
+            'scope' => Feature::serializeScope('custom-scope-1'),
+            'goal_reached' => true
+        ]);
+    }
+
 }
