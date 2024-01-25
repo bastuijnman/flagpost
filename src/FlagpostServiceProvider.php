@@ -12,8 +12,15 @@ class FlagpostServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-        // Define a macro so we can retrieve a default scope when needed
+        /*
+         * Define a macro to get the default scope, this feels incredibly nasty
+         * but it looks like it's the only way to enforce getting the default scope
+         * if nothing gets passed to flagpost (other than re-recreating the entire
+         * setup of pennant).
+         */
         Feature::macro('getDefaultScopeValue', function () {
+
+            /** @var \Laravel\Pennant\Drivers\Decorator $this */
             return $this->defaultScope();
         });
     }
