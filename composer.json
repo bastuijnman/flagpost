@@ -3,6 +3,7 @@
     "description": "Provides basic A/B test results for Laravel Pennant",
     "type": "library",
     "license": "MIT",
+    "version": "1.0.0",
     "autoload": {
         "psr-4": {
             "Bastuijnman\\Flagpost\\": "src/"
@@ -24,10 +25,12 @@
         "illuminate/database": "^10.0",
         "illuminate/support": "^10.0",
         "laravel/pennant": "^1.6",
-        "illuminate/contracts": "*"
+        "illuminate/contracts": "*",
+        "nesbot/carbon": "^2.72"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0"
+        "orchestra/testbench": "^8.0",
+        "laravel/pulse": "v1.0.0-beta11"
     },
     "autoload-dev": {
         "psr-4": {

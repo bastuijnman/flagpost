@@ -2,6 +2,7 @@
 
 namespace Bastuijnman\Flagpost;
 
+use Carbon\Carbon;
 use Illuminate\Config\Repository;
 use Illuminate\Database\DatabaseManager;
 use Laravel\Pennant\Drivers\DatabaseDriver;
@@ -59,7 +60,7 @@ class GoalManager
             ->table($this->config->get("pennant.stores.{$driver}.table") ?? 'features')
             ->where('name', $feature)
             ->where('scope', Feature::serializeScope($scope))
-            ->update(['goal_reached' => true]);
+            ->update(['converted_at' => Carbon::now()]);
     }
 
 }

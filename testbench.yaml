@@ -2,6 +2,7 @@ providers:
   # - Workbench\App\Providers\WorkbenchServiceProvider
   - Laravel\Pennant\PennantServiceProvider
   - Bastuijnman\Flagpost\FlagpostServiceProvider
+  - Livewire\LivewireServiceProvider
 
 migrations:
   - database/migrations

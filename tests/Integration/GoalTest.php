@@ -26,13 +26,14 @@ class GoalTest extends TestCase
         $this->assertEquals('value', $value);
         $this->assertDatabaseHas('features', [
             'name' => 'my-test-feature',
-            'goal_reached' => false
+            'converted_at' => null
         ]);
-
     }
 
     public function test_it_should_be_able_to_reach_goal()
     {
+        $this->travelTo('2024-01-25 00:00:00');
+
         Feature::define('my-test-feature', function () {
             return 'value';
         });
@@ -42,18 +43,20 @@ class GoalTest extends TestCase
         $this->assertEquals('value', $value);
         $this->assertDatabaseHas('features', [
             'name' => 'my-test-feature',
-            'goal_reached' => false
+            'converted_at' => null
         ]);
 
         Goal::reached('my-test-feature');
         $this->assertDatabaseHas('features', [
             'name' => 'my-test-feature',
-            'goal_reached' => true
+            'converted_at' => '2024-01-25 00:00:00'
         ]);
     }
 
     public function test_it_should_be_albe_to_reach_goal_with_custom_scope()
     {
+        $this->travelTo('2024-01-25 00:00:00');
+
         Feature::define('my-test-feature', function () {
             return 'value';
         });
@@ -69,14 +72,14 @@ class GoalTest extends TestCase
         $this->assertDatabaseHas('features', [
             'name' => 'my-test-feature',
             'scope' => Feature::serializeScope('custom-scope-2'),
-            'goal_reached' => true
+            'converted_at' => '2024-01-25 00:00:00'
         ]);
 
         // Scope 1 should not have been set to be reached
-        $this->assertDatabaseMissing('features', [
+        $this->assertDatabaseHas('features', [
             'name' => 'my-test-feature',
             'scope' => Feature::serializeScope('custom-scope-1'),
-            'goal_reached' => true
+            'converted_at' => null
         ]);
     }
 
