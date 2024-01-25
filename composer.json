@@ -16,7 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Bastuijnman\\Flagpost\\ServiceProvider"
+                "Bastuijnman\\Flagpost\\FlagpostServiceProvider"
             ]
         }
     },
