@@ -3,6 +3,8 @@
 namespace Tests\Integration;
 
 use Bastuijnman\Flagpost\Goal;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +83,41 @@ class GoalTest extends TestCase
             'scope' => Feature::serializeScope('custom-scope-1'),
             'converted_at' => null
         ]);
+    }
+
+    public function test_it_should_be_able_to_get_timeseries_results()
+    {
+        $this->travelTo('2024-01-25 16:00:00');
+
+        // Insert 10 converted "pink" values
+        Db::table('features')->insert(array_map(fn ($item) => ['name' => 'my-test-feature', 'scope' => Feature::serializeScope("part1-{$item}"), 'value' => 'pink', 'converted_at' => Carbon::now()], range(1, 10)));
+
+        // Insert 5 converted "green" values
+        Db::table('features')->insert(array_map(fn ($item) => ['name' => 'my-test-feature', 'scope' => Feature::serializeScope("part2-{$item}"), 'value' => 'green', 'converted_at' => Carbon::now()], range(1, 5)));
+
+        $this->travelTo('2024-01-25 16:15:00');
+
+        // Insert 8 converted "blue" values
+        Db::table('features')->insert(array_map(fn ($item) => ['name' => 'my-test-feature', 'scope' => Feature::serializeScope("part3-{$item}"), 'value' => 'blue', 'converted_at' => Carbon::now()], range(1, 8)));
+
+        $this->travelTo('2024-01-25 16:30:00');
+        $collection = Goal::timeseries('my-test-feature', CarbonInterval::hour());
+
+        $this->assertTrue($collection->has('pink'));
+        $this->assertTrue($collection->has('green'));
+        $this->assertTrue($collection->has('blue'));
+
+        $pinkValues = $collection->get('pink')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:00:00')->timestamp);
+        $this->assertNotNull($pinkValues);
+        $this->assertEquals(10, $pinkValues->converted);
+
+        $greenValues = $collection->get('green')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:00:00')->timestamp);
+        $this->assertNotNull($greenValues);
+        $this->assertEquals(5, $greenValues->converted);
+
+        $blueValues = $collection->get('blue')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:15:00')->timestamp);
+        $this->assertNotNull($blueValues);
+        $this->assertEquals(8, $blueValues->converted);
     }
 
 }
