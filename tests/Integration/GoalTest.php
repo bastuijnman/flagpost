@@ -107,15 +107,15 @@ class GoalTest extends TestCase
         $this->assertTrue($collection->has('green'));
         $this->assertTrue($collection->has('blue'));
 
-        $pinkValues = $collection->get('pink')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:00:00')->timestamp);
+        $pinkValues = $collection->get('pink')->first(fn ($item) => data_get($item, 'time') === Carbon::parse('2024-01-25 16:00:00')->timestamp);
         $this->assertNotNull($pinkValues);
         $this->assertEquals(10, $pinkValues->converted);
 
-        $greenValues = $collection->get('green')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:00:00')->timestamp);
+        $greenValues = $collection->get('green')->first(fn ($item) => data_get($item, 'time') === Carbon::parse('2024-01-25 16:00:00')->timestamp);
         $this->assertNotNull($greenValues);
         $this->assertEquals(5, $greenValues->converted);
 
-        $blueValues = $collection->get('blue')->first(fn ($item) => $item->time === Carbon::parse('2024-01-25 16:15:00')->timestamp);
+        $blueValues = $collection->get('blue')->first(fn ($item) => data_get($item, 'time') === Carbon::parse('2024-01-25 16:15:00')->timestamp);
         $this->assertNotNull($blueValues);
         $this->assertEquals(8, $blueValues->converted);
     }

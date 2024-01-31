@@ -20,7 +20,7 @@ class GoalManager
 
     protected mixed $scope = null;
 
-    protected mixed $store = null;
+    protected ?string $store = null;
 
     public function __construct(
         protected FeatureManager $manager,
@@ -33,7 +33,7 @@ class GoalManager
     /**
      * Sets the scope for the goal. 
      */
-    public function for($scope): GoalManager
+    public function for(mixed $scope): GoalManager
     {
         $this->scope = $scope;
         return $this;
@@ -42,16 +42,16 @@ class GoalManager
     /**
      * Sets the store for the goal
      */
-    public function store($store): GoalManager 
+    public function store(string $store): GoalManager 
     {
-        $this->scope = $store;
+        $this->store = $store;
         return $this;
     }
 
     /**
      * Indicates goal has been reached for a feature.
      */
-    public function reached($feature)
+    public function reached(string $feature)
     {    
         $driver = Feature::getDefaultDriver();
         $scope = $this->scope ?? Feature::getDefaultScopeValue();
@@ -71,7 +71,7 @@ class GoalManager
     /**
      * Get the total number of sessions & conversions for a given feature. 
      */
-    public function results($feature): Collection
+    public function results(string $feature): Collection
     {
         $driver = Feature::getDefaultDriver();
 
@@ -98,11 +98,24 @@ class GoalManager
             ->prepend(['value' => 'total', 'converted' => $total]);
     }
 
-    public function timeseries($feature, CarbonInterval $interval): Collection
+    public function timeseries(string $feature, CarbonInterval $period, ?int $interval = null): Collection
     {
+
+        /* 
+         * Calculate timeseries intervals based on the period given. Calculates some 
+         * defaults based on the periods that can be set in Laravel Pulse
+         */
+        $interval = $interval ?? match ($period->total('hours')) {
+            1 => 300,
+            6 => 1800,
+            24 => 7200,
+            168 => 86400,
+            default => 300
+        };
+
         $driver = Feature::getDefaultDriver();
-        $start = floor(Carbon::now()->sub($interval)->timestamp / 300) * 300;
-        $range = Carbon::createFromTimestamp($start)->range('now', 5, 'minutes');
+        $start = floor(Carbon::now()->sub($period)->timestamp / $interval) * $interval;
+        $range = Carbon::createFromTimestamp($start)->range('now', $interval, 'seconds');
 
         if (!Feature::store($this->store)->getDriver() instanceof DatabaseDriver) {
             throw new RuntimeException('Only DB Driver is supported');
@@ -111,10 +124,10 @@ class GoalManager
         // Define what macro to use based on database driver
         $conn = $this->config->get('database.default');
         $macro = match ($this->config->get("database.connections.{$conn}.driver")) {
-            'sqlite' => '(unixepoch(converted_at) / 300) * 300',
-            'mysql' => 'UNIX_TIMESTAMP(converted_at) DIV 300 * 300',
-            'mariadb' => 'UNIX_TIMESTAMP(converted_at) DIV 300 * 300',
-            'pgsql' => 'cast(extract(epoch from converted_at)/(300) as integer)*300',
+            'sqlite' => "(unixepoch(converted_at) / {$interval}) * {$interval}",
+            'mysql' => "UNIX_TIMESTAMP(converted_at) DIV {$interval} * {$interval}",
+            'mariadb' => "UNIX_TIMESTAMP(converted_at) DIV {$interval} * {$interval}",
+            'pgsql' => "cast(extract(epoch from converted_at)/({$interval}) as integer)*{$interval}",
             default => throw new RuntimeException('Current database driver not supported for time series')
         };
 

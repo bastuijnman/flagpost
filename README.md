@@ -109,6 +109,14 @@ $timeseries = Goal::timeseries('purchase-button', CarbonInterval::hour());
  */
 ```
 
+When any of the default periods of Laravel Pulse are given in the `timeseries` method Flagpost will automatically infer the "best" interval to display in a chart. However if you just want to retrieve data you can pass in the interval parameter like so:
+
+```php
+$timeseries = Goal::timeseries('purchase-button', CarbonInterval::hours(8), 3600);
+```
+
+Where the interval is specified in seconds
+
 #### Pulse
 Flagpost ships with a card for Pulse by default, if your application has installed Pulse you can configure a feature card as follows:
 
