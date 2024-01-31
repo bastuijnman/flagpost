@@ -112,6 +112,7 @@ class GoalManager
         $conn = $this->config->get('database.default');
         $macro = match ($this->config->get("database.connections.{$conn}.driver")) {
             'sqlite' => '(unixepoch(converted_at) / 300) * 300',
+            'mysql' => 'UNIX_TIMESTAMP(converted_at) DIV 300 * 300',
             default => throw new RuntimeException('Current database driver not supported for time series')
         };
 
