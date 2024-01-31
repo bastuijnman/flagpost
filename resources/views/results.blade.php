@@ -39,6 +39,10 @@
 
 @script
 <script>
+const formatDateForChart = (time) => {
+    return (new Date(time * 1000)).toLocaleString();
+};
+
 let chart = null;
 Alpine.data('flagpostResultChart', (config) => ({
     init() {
@@ -63,7 +67,7 @@ Alpine.data('flagpostResultChart', (config) => ({
                 label: key,
                 data: config.results[key].reduce((a, v) => ({
                     ...a,
-                    [v.time]: v.converted
+                    [formatDateForChart(v.time)]: v.converted
                 }), {})
             }));
         }
@@ -96,7 +100,7 @@ Alpine.data('flagpostResultChart', (config) => ({
                         }
                     },
                     scales: {
-                        y: { display: false}
+                        y: { display: false },
                     }
                 },
             }

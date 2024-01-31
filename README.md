@@ -118,7 +118,7 @@ Flagpost ships with a card for Pulse by default, if your application has install
 
 It will render a card that allows you to either view the total results or in a timeseries based on the selected period.
 
-TODO: add image
+![Laravel Pulse card](docs/images/pulse.png)
 
 ## Testing
 

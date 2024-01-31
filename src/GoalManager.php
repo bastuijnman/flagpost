@@ -111,7 +111,7 @@ class GoalManager
         // Define what macro to use based on database driver
         $conn = $this->config->get('database.default');
         $macro = match ($this->config->get("database.connections.{$conn}.driver")) {
-            'sqlite' => '(unixepoch(converted_at) / 900) * 900',
+            'sqlite' => '(unixepoch(converted_at) / 300) * 300',
             default => throw new RuntimeException('Current database driver not supported for time series')
         };
 
@@ -146,6 +146,7 @@ class GoalManager
                 if (!$timeValues->first(fn ($timeValue) => data_get($timeValue, 'time') === $time)) {
                     $timeValues->add([ 'time' => $time, 'converted' => 0 ]);
                 }
+                $collection->put($value, $timeValues->sortBy('time')->values());
             });
         }
 
