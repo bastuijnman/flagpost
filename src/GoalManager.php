@@ -4,10 +4,8 @@ namespace Bastuijnman\Flagpost;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Carbon\CarbonPeriod;
 use Illuminate\Config\Repository;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Drivers\DatabaseDriver;
