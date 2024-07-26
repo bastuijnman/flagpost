@@ -15,7 +15,6 @@ use RuntimeException;
 
 class GoalManager
 {
-
     protected mixed $scope = null;
 
     protected ?string $store = null;
@@ -24,12 +23,11 @@ class GoalManager
         protected FeatureManager $manager,
         protected DatabaseManager $db,
         protected Repository $config
-    )
-    {
+    ) {
     }
 
     /**
-     * Sets the scope for the goal. 
+     * Sets the scope for the goal.
      */
     public function for(mixed $scope): GoalManager
     {
@@ -40,7 +38,7 @@ class GoalManager
     /**
      * Sets the store for the goal
      */
-    public function store(string $store): GoalManager 
+    public function store(string $store): GoalManager
     {
         $this->store = $store;
         return $this;
@@ -49,15 +47,15 @@ class GoalManager
     /**
      * Indicates goal has been reached for a feature.
      */
-    public function reached(string $feature)
-    {    
+    public function reached(string $feature): void
+    {
         $driver = Feature::getDefaultDriver();
         $scope = $this->scope ?? Feature::getDefaultScopeValue();
 
         if (!Feature::store($this->store)->getDriver() instanceof DatabaseDriver) {
             throw new RuntimeException('Only DB Driver is supported');
         }
-       
+
         $this->db
             ->connection($this->config->get("pennant.stores.{$driver}.connection") ?? null)
             ->table($this->config->get("pennant.stores.{$driver}.table") ?? 'features')
@@ -67,7 +65,7 @@ class GoalManager
     }
 
     /**
-     * Get the total number of sessions & conversions for a given feature. 
+     * Get the total number of sessions & conversions for a given feature.
      */
     public function results(string $feature): Collection
     {
@@ -99,8 +97,8 @@ class GoalManager
     public function timeseries(string $feature, CarbonInterval $period, ?int $interval = null): Collection
     {
 
-        /* 
-         * Calculate timeseries intervals based on the period given. Calculates some 
+        /*
+         * Calculate timeseries intervals based on the period given. Calculates some
          * defaults based on the periods that can be set in Laravel Pulse
          */
         $interval = $interval ?? match ($period->total('hours')) {
@@ -132,9 +130,9 @@ class GoalManager
         $times = iterator_to_array($range->map(fn ($date) => $date->timestamp));
 
         /*
-         * Grab collection from database in timeseries by injecting the proper macro for the 
+         * Grab collection from database in timeseries by injecting the proper macro for the
          * database driver.
-         * 
+         *
          * TODO: When there are no sessions started for a particular value for the provided
          * time it will not show up in the results.
          */
@@ -152,7 +150,7 @@ class GoalManager
         /*
          * DB results might not include timestamps if they did not have converted values at that point, so
          * we add it if missing.
-         * 
+         *
          * Not a great solution, but still better than to do this in DB
          */
         foreach ($times as $time) {
@@ -166,5 +164,4 @@ class GoalManager
 
         return $collection;
     }
-
 }
